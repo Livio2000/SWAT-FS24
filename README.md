@@ -1,6 +1,6 @@
-# Modul SWDA - Service Microservice Sample
+# SWAT-FS24
 
-ArticleService von g06.
+ArticleService von g06 im Modul SWDA-HS23.
 
 ## Build lokal
 
@@ -26,8 +26,4 @@ Vorausgesetzt, der backbone läuft, kann der Service lokal vielfältig gestartet
   - `mvn docker:start` - Start des Containers
   - `mvn docker:logs` - Anzeige der Logs
   - `mvn docker:stop` - Stoppen und löschen des Containers
-- Docker pur: `docker run --rm -it -e "RMQ_HOST=host.docker.internal" swda-23hs01/service-sample` //TODO: change
-# SWAT-FS24
-# SWAT-FS24
-# SWAT-FS24
-# SWAT-FS24
+- Docker pur: `docker run --rm -it -e "RMQ_HOST=host.docker.internal" swda-23hs01/service-sample`
