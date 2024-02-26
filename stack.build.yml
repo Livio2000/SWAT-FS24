@@ -1,0 +1,19 @@
+# Container orchestration to build docker images from source code
+#
+# roland.christen@hslu.ch
+##
+
+version: '3.5'
+
+services:
+
+  app:
+    image: $CICD_IMAGE_ID
+#    image: $IMAGE_ID
+    build:
+      context: .
+      args:
+        CI_GIT_VERSION: $CICD_GIT_VERSION
+        CI_GIT_DATE: $CICD_GIT_DATE
+#        GIT_VERSION: $GIT_VERSION
+#        GIT_DATE: $GIT_DATE

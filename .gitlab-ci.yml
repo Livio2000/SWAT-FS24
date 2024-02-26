@@ -1,0 +1,11 @@
+include:
+  - project: hslu/shared/devops/cicd
+    ref: v5-stable
+    file: 
+      - edu/swarm.cd.yml
+      - edu/config/swda.yml
+
+  - project: hslu/edu/bachelor-computer-science/swda/shared/swda-ci
+    ref: v1
+    file: 
+      - swda/java.ci.yml

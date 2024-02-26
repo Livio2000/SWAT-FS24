@@ -1,0 +1,47 @@
+# Stack configuration for Deployment on SWDA Swarm.
+#
+# roland.christen@hslu.ch
+##
+
+version: '3.5'
+
+networks:
+  ingress:
+    name: traefik-public
+    external: true
+  bus:
+    name: bus
+    external: true
+  internal-articleservice:
+    name: internal-articleservice
+
+services:
+
+  app:
+#    image: $IMAGE_ID
+    hostname: articleservice
+    image: $CICD_IMAGE_ID
+    environment:
+      - RMQ_HOST=bus
+#    volumes:
+#      - /etc/localtime:/etc/localtime
+#      - /etc/timezone:/etc/timezone
+    networks:
+      - bus
+      - ingress
+      - internal-articleservice
+    deploy:
+      replicas: 1
+      labels:
+        - 'traefik.http.routers.${CICD_STACK_NAME}App.rule=Host(`atricleservice.${CICD_STACK_NAME}.${TLD}`)'
+        - 'traefik.http.services.${CICD_STACK_NAME}App.loadbalancer.server.port=8080'
+        - 'traefik.http.routers.${CICD_STACK_NAME}App.entrypoints=websecure'
+        - 'traefik.http.routers.${CICD_STACK_NAME}App.tls.certresolver=letsencrypt'
+  mongodb:
+    hostname: articleservicedb
+    image: mongo:4.2.5
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: 'root'
+      MONGO_INITDB_ROOT_PASSWORD: 'root'
+    networks:
+      - internal-articleservice

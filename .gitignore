@@ -1,0 +1,11 @@
+.m2
+/target/
+/.settings/
+/.classpath
+/.project
+.idea
+*.iml
+*.log
+/nbproject/
+/dependency-reduced-pom.xml
+/.vscode
