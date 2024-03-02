@@ -1,4 +1,4 @@
-package ch.hslu.swda.g06.article.Logging.model;
+package ch.hslu.swda.g06.article.logging.model;
 
 public class Log {
     private Action action;

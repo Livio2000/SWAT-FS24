@@ -1,10 +1,9 @@
-package ch.hslu.swda.g06.article.Logging;
+package ch.hslu.swda.g06.article.logging;
 
 
-import ch.hslu.swda.g06.article.Logging.model.Action;
-import ch.hslu.swda.g06.article.Logging.model.Log;
+import ch.hslu.swda.g06.article.logging.model.Action;
+import ch.hslu.swda.g06.article.logging.model.Log;
 import ch.hslu.swda.g06.article.model.Article;
-import ch.hslu.swda.g06.article.model.Reason;
 import com.google.gson.Gson;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.MessageProperties;

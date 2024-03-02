@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import ch.hslu.swda.g06.article.Logging.SendLog;
+import ch.hslu.swda.g06.article.logging.SendLog;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
@@ -33,23 +33,26 @@ public class ArticleMessageReceiver {
     private static final Gson GSON = new Gson();
     private static final Integer AMOUNTTOREORDER = 20;
 
-    @Autowired
-    private IArticleRepository articleRepository;
+    private final IArticleRepository articleRepository;
 
-    @Autowired
-    private AmqpTemplate amqpTemplate;
+    private final AmqpTemplate amqpTemplate;
 
-    @Autowired
-    private StoreFactory storeFactory;
+    private final StoreFactory storeFactory;
 
-    @Autowired
-    private ArticleFactory articleFactory;
+    private final ArticleFactory articleFactory;
 
-    @Autowired
-    private MainWarehouseFactory mainWarehouseFactory;
+    private final MainWarehouseFactory mainWarehouseFactory;
 
-    @Autowired
-    private ReOrderFactory reOrderFactory;
+    private final ReOrderFactory reOrderFactory;
+
+    public ArticleMessageReceiver(IArticleRepository articleRepository, AmqpTemplate amqpTemplate, StoreFactory storeFactory, ArticleFactory articleFactory, MainWarehouseFactory mainWarehouseFactory, ReOrderFactory reOrderFactory) {
+        this.articleRepository = articleRepository;
+        this.amqpTemplate = amqpTemplate;
+        this.storeFactory = storeFactory;
+        this.articleFactory = articleFactory;
+        this.mainWarehouseFactory = mainWarehouseFactory;
+        this.reOrderFactory = reOrderFactory;
+    }
 
     @RabbitListener(queues = "article.post")
     public void createArticle(Message message) {

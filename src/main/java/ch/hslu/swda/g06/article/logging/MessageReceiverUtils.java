@@ -1,4 +1,4 @@
-package ch.hslu.swda.g06.article.Logging;
+package ch.hslu.swda.g06.article.logging;
 
 import ch.hslu.swda.g06.article.model.Article;
 import com.google.gson.Gson;
