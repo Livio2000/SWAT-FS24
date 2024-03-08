@@ -1,0 +1,32 @@
+version: "3.5"
+
+networks:
+  ingress:
+    name: traefik-public
+    external: true
+  bus:
+    name: bus
+    external: true
+  internal-orderservice:
+    name: internal-orderservice
+
+services:
+  mongodb:
+    hostname: orderservicedb
+    image: mongo:4.2.5
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: "root"
+      MONGO_INITDB_ROOT_PASSWORD: "root"
+    networks:
+      - internal-orderservice
+  bus:
+    image: rabbitmq:3.8-management
+    restart: always
+    environment:
+      RABBITMQ_DEFAULT_USER: "admin"
+      RABBITMQ_DEFAULT_PASS: "admin"
+    ports:
+      - "8083:15672"
+      - "5672:5672"
+    networks:
+      - internal-orderservice
