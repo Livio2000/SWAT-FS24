@@ -112,7 +112,7 @@
         <docker.image>swda-23hs/service-sample</docker.image>
         <docker.port>8090</docker.port>
 
-        <project.build.targetJdk>17</project.build.targetJdk>
+        <project.build.targetJdk>21</project.build.targetJdk>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>${project.build.sourceEncoding}</project.reporting.outputEncoding>
         <project.maven.version>3.3.9</project.maven.version>
