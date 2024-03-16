@@ -10,12 +10,12 @@ import java.util.concurrent.ThreadLocalRandom;
 
 @Component
 public class MainWarehouseFactory {
-    private final Map<Integer, Integer> stockMap = new HashMap();
-    private Stock MAINSTOCK = StockFactory.getStock();
+    private final Map<Integer, Integer> stockMap = new HashMap<>();
+    private final Stock mainStock = StockFactory.getStock();
 
     public MainWarehouseFactory() {
         /*
-        this creates 100 random products and add's them to the stockMap.
+        this creates 100 random products and adds them to the stockMap.
         this simulates a main warehouse where the stores can get their products.
         */
         Set<Integer> articleIds = new HashSet<>();
@@ -32,18 +32,17 @@ public class MainWarehouseFactory {
         return this.stockMap;
     }
 
-    public int createArticle(int articleId) {
-        int stock = MAINSTOCK.getItemCount(articleId);
+    public void createArticle(int articleId) {
+        int stock = mainStock.getItemCount(articleId);
         this.stockMap.put(articleId, stock);
-        return articleId;
     }
 
     public List<String> checkOrder(ReOrder reOrder) {
-        List<String> warnings = new ArrayList<String>();
+        List<String> warnings = new ArrayList<>();
         for (ReOrderArticle article : reOrder.getReOrderItems())
         {
-            if(MAINSTOCK.getItemCount(article.getMainWarehouseArticleId()) < article.getAmount()){
-                warnings.add("Artikel " + article.getMainWarehouseArticleId() + " kann nicht nachbestellt werden da im Zentrallager nurnoch " + MAINSTOCK.getItemCount(article.getMainWarehouseArticleId()) + " Stück verfügbar sind");
+            if(mainStock.getItemCount(article.getMainWarehouseArticleId()) < article.getAmount()){
+                warnings.add("Artikel " + article.getMainWarehouseArticleId() + " kann nicht nachbestellt werden da im Zentrallager nurnoch " + mainStock.getItemCount(article.getMainWarehouseArticleId()) + " Stück verfügbar sind");
             }
         }
         return warnings;
@@ -61,8 +60,8 @@ public class MainWarehouseFactory {
     }
 
     private boolean orderItem(int articleId, int amount) {
-        int remainingStock = MAINSTOCK.getItemCount(articleId) - amount;
-        int stock = MAINSTOCK.orderItem(articleId, remainingStock);
+        int remainingStock = mainStock.getItemCount(articleId) - amount;
+        int stock = mainStock.orderItem(articleId, remainingStock);
         this.stockMap.put(articleId, stock);
         return stock > 0;
     }

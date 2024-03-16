@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import ch.hslu.swda.g06.article.model.Article;
@@ -17,14 +16,17 @@ import ch.hslu.swda.g06.article.repository.IReOrderRepository;
 
 @Component
 public class ReOrderFactory {
-    @Autowired
-    private IReOrderRepository reOrderRepository;
+    private final IReOrderRepository reOrderRepository;
 
-    @Autowired
-    private IArticleRepository articleRepository;
+    private final IArticleRepository articleRepository;
 
-    @Autowired
-    private MainWarehouseFactory mainWarehouseFactory;
+    private final MainWarehouseFactory mainWarehouseFactory;
+
+    public ReOrderFactory(IReOrderRepository reOrderRepository, IArticleRepository articleRepository, MainWarehouseFactory mainWarehouseFactory) {
+        this.reOrderRepository = reOrderRepository;
+        this.articleRepository = articleRepository;
+        this.mainWarehouseFactory = mainWarehouseFactory;
+    }
 
     public void reOrder(Map<Integer, Integer> articlesToOrder, String forStoreId) {
         ReOrder reOrderToOrder = new ReOrder(
