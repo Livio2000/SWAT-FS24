@@ -101,7 +101,8 @@
         <!-- VM-Args (z.B. Memory-Settings) für Unit- und Integrationstests. -->
         <argLine>-Xms512m -Xmx1g -Xss10m</argLine>
 
-        <!-- TODO: Hier ggf. andere Startklasse anpassen! -->
+        <java.version>21</java.version>
+
         <jar.start.class>ch.hslu.swda.g06.article.Main</jar.start.class>
         <exec.mainClass>${jar.start.class}</exec.mainClass>
 
@@ -334,12 +335,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-mongodb</artifactId>
-            <version>3.0.0</version>
+            <version>3.2.3</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-amqp</artifactId>
-            <version>3.0.0</version>
+            <version>3.2.3</version>
         </dependency>
     </dependencies>
 
