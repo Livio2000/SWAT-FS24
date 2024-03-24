@@ -13,11 +13,11 @@ public class MainWarehouseFactory {
     private final Map<Integer, Integer> stockMap = new HashMap<>();
     private final Stock mainStock = StockFactory.getStock();
 
+    /*
+    * Creates 100 random products and adds them to the stockMap.
+    * This simulates a main warehouse where the stores can get their products.
+    */
     public MainWarehouseFactory() {
-        /*
-        this creates 100 random products and adds them to the stockMap.
-        this simulates a main warehouse where the stores can get their products.
-        */
         Set<Integer> articleIds = new HashSet<>();
         for (int i = 0; i < 100; i++){
             articleIds.add(generateRandomNumber());
@@ -62,6 +62,10 @@ public class MainWarehouseFactory {
     private boolean orderItem(int articleId, int amount) {
         int remainingStock = mainStock.getItemCount(articleId) - amount;
         int stock = mainStock.orderItem(articleId, remainingStock);
+        if(stock < 0) {
+            return false;
+        }
+
         this.stockMap.put(articleId, stock);
         return stock > 0;
     }
