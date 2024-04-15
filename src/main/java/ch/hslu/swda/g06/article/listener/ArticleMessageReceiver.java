@@ -11,7 +11,6 @@ import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
@@ -45,13 +44,22 @@ public class ArticleMessageReceiver {
 
     private final ReOrderFactory reOrderFactory;
 
-    public ArticleMessageReceiver(IArticleRepository articleRepository, AmqpTemplate amqpTemplate, StoreFactory storeFactory, ArticleFactory articleFactory, MainWarehouseFactory mainWarehouseFactory, ReOrderFactory reOrderFactory) {
+    private final SendLog logger;
+
+    public ArticleMessageReceiver(IArticleRepository articleRepository,
+                                  AmqpTemplate amqpTemplate,
+                                  StoreFactory storeFactory,
+                                  ArticleFactory articleFactory,
+                                  MainWarehouseFactory mainWarehouseFactory,
+                                  ReOrderFactory reOrderFactory,
+                                  SendLog sendLog) {
         this.articleRepository = articleRepository;
         this.amqpTemplate = amqpTemplate;
         this.storeFactory = storeFactory;
         this.articleFactory = articleFactory;
         this.mainWarehouseFactory = mainWarehouseFactory;
         this.reOrderFactory = reOrderFactory;
+        this.logger = sendLog;
     }
 
     @RabbitListener(queues = "article.post")
@@ -81,8 +89,7 @@ public class ArticleMessageReceiver {
         Article createdArticle = articleRepository.save(newArticle);
 
         sendArticleResponse(createdArticle, properties);
-        // ToDo: Send log message
-        SendLog.sendArticleCreatedLog(newArticle, properties.getCorrelationId(), GSON, amqpTemplate);
+        logger.sendArticleCreatedLog(newArticle, properties.getCorrelationId());
     }
 
     @RabbitListener(queues = "article.get")
@@ -136,14 +143,13 @@ public class ArticleMessageReceiver {
 
         if (articleToUpdate.getAmount() < articleToUpdate.getMinimalQuantity()) {
             reOrderFactory.reOrder(Map.of(articleToUpdate.getMainWarehouseArticleId(), AMOUNTTOREORDER),
-                    articleToUpdate.getStoreId());
+                    articleToUpdate.getStoreId(), properties);
         }
 
         articleToUpdate.setCurrentEtag();
         Article updatedArticleResult = articleRepository.save(articleToUpdate);
         sendArticleResponse(updatedArticleResult, properties);
-        // ToDo: Send log message
-        SendLog.sendArticleUpdatedLog(articleToUpdate, properties.getCorrelationId(), GSON, amqpTemplate);
+        logger.sendArticleUpdatedLog(articleToUpdate, properties.getCorrelationId());
     }
 
     @RabbitListener(queues = "article.delete")
@@ -161,8 +167,7 @@ public class ArticleMessageReceiver {
             sendDeleteResponse(false, properties);
         }
 
-        // ToDo: Send log message
-        SendLog.sendArticleDeletedLog(article, properties.getCorrelationId(), GSON, amqpTemplate);
+        logger.sendArticleDeletedLog(article, properties.getCorrelationId());
     }
 
     @RabbitListener(queues = "article.verify")
@@ -192,7 +197,7 @@ public class ArticleMessageReceiver {
             articleToVerify.setAmount(articleToVerify.getAmount() - dto.getAmount());
             if (articleToVerify.getMinimalQuantity() > articleToVerify.getAmount()) {
                 reOrderFactory.reOrder(Map.of(articleToVerify.getMainWarehouseArticleId(), AMOUNTTOREORDER),
-                        articleToVerify.getStoreId());
+                        articleToVerify.getStoreId(), properties);
             }
             articleToVerify.setCurrentEtag();
             articleRepository.save(articleToVerify);
@@ -220,20 +225,20 @@ public class ArticleMessageReceiver {
     }
 
     private void sendArticleResponse(Article article, MessageProperties properties) {
-        String ArticleJson = GSON.toJson(article);
+        String articleJson = GSON.toJson(article);
 
         MessageProperties returnMessageProperties = createReturnMessageProperties(properties);
 
-        Message returnMessage = new Message(ArticleJson.getBytes(), returnMessageProperties);
+        Message returnMessage = new Message(articleJson.getBytes(), returnMessageProperties);
         amqpTemplate.send(properties.getReplyTo(), returnMessage);
     }
 
-    private void sendArticlesResponse(Collection<Article> Articles, MessageProperties properties) {
-        String ArticlesJson = GSON.toJson(Articles);
+    private void sendArticlesResponse(Collection<Article> articles, MessageProperties properties) {
+        String articleJson = GSON.toJson(articles);
 
         MessageProperties returnMessageProperties = createReturnMessageProperties(properties);
 
-        Message returnMessage = new Message(ArticlesJson.getBytes(), returnMessageProperties);
+        Message returnMessage = new Message(articleJson.getBytes(), returnMessageProperties);
         amqpTemplate.send(properties.getReplyTo(), returnMessage);
     }
 

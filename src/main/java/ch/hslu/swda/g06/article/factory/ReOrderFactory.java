@@ -3,8 +3,9 @@ package ch.hslu.swda.g06.article.factory;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
+import ch.hslu.swda.g06.article.logging.SendLog;
+import org.springframework.amqp.core.MessageProperties;
 import org.springframework.stereotype.Component;
 
 import ch.hslu.swda.g06.article.model.Article;
@@ -22,30 +23,43 @@ public class ReOrderFactory {
 
     private final MainWarehouseFactory mainWarehouseFactory;
 
-    public ReOrderFactory(IReOrderRepository reOrderRepository, IArticleRepository articleRepository, MainWarehouseFactory mainWarehouseFactory) {
+    private final SendLog logger;
+
+    public ReOrderFactory(IReOrderRepository reOrderRepository,
+                          IArticleRepository articleRepository,
+                          MainWarehouseFactory mainWarehouseFactory,
+                          SendLog sendLog) {
         this.reOrderRepository = reOrderRepository;
         this.articleRepository = articleRepository;
         this.mainWarehouseFactory = mainWarehouseFactory;
+        this.logger = sendLog;
     }
 
-    public void reOrder(Map<Integer, Integer> articlesToOrder, String forStoreId) {
+    public void reOrder(Map<Integer, Integer> articlesToOrder, String forStoreId, MessageProperties properties) {
         ReOrder reOrderToOrder = new ReOrder(
                 UUID.randomUUID().toString(),
                 ReOrderState.Ordered,
                 forStoreId,
                 articlesToOrder.entrySet().stream()
                         .map(entry -> new ReOrderArticle(entry.getKey(), entry.getValue()))
-                        .collect(Collectors.toList()));
+                        .toList());
 
         List<String> warnings = mainWarehouseFactory.checkOrder(reOrderToOrder);
         if (!warnings.isEmpty()) {
-            // ToDo: Send log message
+            logger.sendReOrderErrorLog(
+                    reOrderToOrder,
+                    String.join("\n", warnings),
+                    properties.getCorrelationId());
             return;
         }
 
         boolean result = mainWarehouseFactory.createOrder(reOrderToOrder);
         if (!result) {
-            // ToDo: Send log message
+            logger.sendReOrderErrorLog(
+                    reOrderToOrder,
+                    "There was an error while placing the reorder.",
+                    properties.getCorrelationId()
+            );
             return;
         }
 
@@ -56,12 +70,23 @@ public class ReOrderFactory {
         if (reOrder.getReOrderState() == ReOrderState.Complete) {
             return;
         }
+
+        if (updateAmountOfReOrderArticles(reOrder)) {
+            reOrder.setReOrderState(ReOrderState.Complete);
+            reOrder.setCurrentEtag();
+            reOrderRepository.save(reOrder);
+        }
+    }
+
+    public boolean updateAmountOfReOrderArticles(ReOrder reOrder){
         boolean setOrderToComplete = true;
+
         for (ReOrderArticle reOrderArticle : reOrder.getReOrderItems()) {
             Article article = articleRepository.getArticleByMainWarehouseArticleIdAndStoreId(
                     reOrderArticle.getMainWarehouseArticleId(), reOrder.getStoreId());
             if (article == null) {
                 setOrderToComplete = false;
+                continue;
             }
 
             article.setAmount(article.getAmount() + reOrderArticle.getAmount());
@@ -69,10 +94,6 @@ public class ReOrderFactory {
             articleRepository.save(article);
         }
 
-        if (setOrderToComplete) {
-            reOrder.setReOrderState(ReOrderState.Complete);
-            reOrder.setCurrentEtag();
-            reOrderRepository.save(reOrder);
-        }
+        return setOrderToComplete;
     }
 }
