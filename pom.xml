@@ -729,7 +729,7 @@
                     </dependency>
                 </dependencies>
                 <configuration>
-                    <sourceDirectory>src/docs/asciidoc</sourceDirectory>
+                    <sourceDirectory>docs/asciidoc</sourceDirectory>
                     <attributes>
                         <sourcedir>${project.build.sourceDirectory}</sourcedir>
                     </attributes>
