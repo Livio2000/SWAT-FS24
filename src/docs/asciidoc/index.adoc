@@ -1,40 +1,23 @@
-= Dokumentation Beispiel
-Vorname, Name <vorname.name@hslu.ch>
-V0.0.1, 2023-09-07
-:imagesdir: ./images
+= SWAT FS24 - Articleservice
+Livio, Theiler <livio.theiler@stud.hslu.ch>
+V0.0.1, 2024-05-09
 :toc:
 :toc-title: Inhaltsverzeichnis
 :toclevels: 1
 
 == Einführung
-Sie haben die Möglichkeit eine Dokumentation mit https://asciidoc.org/ zu schreiben.
-Diese wird in HTML5 aufbereitet, oder steht auch als link:index.pdf[PDF] zur Verfügung.
+Das Projekt ist ein Artikel-Service, der in Java und Spring Boot entwickelt wurde.
+Es verwendet Maven als Build-Tool und ist für die Integration mit MongoDB und RabbitMQ konfiguriert.
 
-== Kapitel 1: Titel
-Beispiel für ein Kapitel.
+Der Service ist dafür verantwortlich, Artikelinformationen zu verwalten und bereitzustellen. Es bietet eine Reihe von Endpunkten, um Artikel zu erstellen, abzurufen, zu aktualisieren und zu löschen.
 
-== Kapitel 2: tbd
-tbd
 
-== Appendix: Beispiele
-Mann kann ganz einfach Bilder integrieren:
+
+== Klassendiagramm
+image::ArticleService_Klassendiagramm.drawio.png[]
+
+
+
+
 
 image::HSLU-Logo-21-klein.png[]
-
-Und wichtige Textstellen mit vierschiedenen Levels auszeichnen:
-
-WARNING: Das ist eine Warnung!
-
-TIP: Das ist ein Tipp!
-
-IMPORTANT: Das ist wichtig!
-
-CAUTION: Achtung, das ist gefährlich!
-
-NOTE: Das ist ein kleiner Hinweis.
-
-Und man kann auch zitieren:
-
-[quote,Albert Einstein]
-Ein Mensch der keine Fehler macht, hat nie etwas neues ausprobiert.
-
