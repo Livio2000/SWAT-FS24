@@ -100,7 +100,7 @@ class GetMainWarehouseIT {
         Map<Integer, Integer> receivedArticles = GSON.fromJson(new String(getAllArticleMessage.getBody()), articleListType);
 
         assertNotNull(getAllArticleMessage);
-        assertNotNull(receivedArticles);
+        assertNull(receivedArticles);
         assertEquals(100, receivedArticles.size(), "The number of articles in the main warehouse is not correct.");
     }
 }
