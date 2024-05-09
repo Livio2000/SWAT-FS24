@@ -33,3 +33,5 @@ jobs:
       run: mvn -B package --file pom.xml
     - name: Run Integration tests
       run: mvn -B verify --file pom.xml
+    - name: Build Documentation
+      run: mvn site

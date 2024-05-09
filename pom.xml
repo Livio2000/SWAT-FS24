@@ -733,6 +733,7 @@
                     <attributes>
                         <sourcedir>${project.build.sourceDirectory}</sourcedir>
                     </attributes>
+                    <outputDirectory>${project.basedir}/docs</outputDirectory>
                 </configuration>
                 <executions>
                     <execution>
