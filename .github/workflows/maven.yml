@@ -19,6 +19,15 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    services:
+      docker:
+        image: docker:19.03.12-dind
+        options: --privileged
+        ports:
+          - 2375:2375
+    env:
+      DOCKER_HOST: tcp://localhost:2375
+
     steps:
     - uses: actions/checkout@v3
     - name: Set up JDK 21
@@ -31,3 +40,5 @@ jobs:
       run: mvn -B test --file pom.xml
     - name: Build with Maven
       run: mvn -B package --file pom.xml
+    - name: Build with Maven
+      run: mvn -B verify --file pom.xml

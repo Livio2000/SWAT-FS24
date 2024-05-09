@@ -1,4 +1,4 @@
-package ch.hslu.swda.g06.article.IntegrationTests;
+package ch.hslu.swda.g06.article.integrationTests;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

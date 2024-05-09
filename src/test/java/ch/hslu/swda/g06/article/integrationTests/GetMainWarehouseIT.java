@@ -1,15 +1,12 @@
-package ch.hslu.swda.g06.article.IntegrationTests;
+package ch.hslu.swda.g06.article.integrationTests;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
-import ch.hslu.swda.g06.article.model.Article;
 import com.google.gson.reflect.TypeToken;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
