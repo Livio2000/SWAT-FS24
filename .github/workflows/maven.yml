@@ -27,7 +27,7 @@ jobs:
           - 2375:2375
     env:
       DOCKER_TLS_CERTDIR: ""
-      DOCKER_HOST: tcp://localhost:2375
+      DOCKER_HOST: tcp://docker:2375
 
     steps:
     - uses: actions/checkout@v3
@@ -40,6 +40,6 @@ jobs:
     - name: Run Maven tests
       run: mvn -B test --file pom.xml
     - name: Build with Maven
-      run: mvn -B package --file pom.xml -Ddocker.host=http://localhost:2375
-    - name: Run integration tests
+      run: mvn -B package --file pom.xml -Ddocker.host=http://docker:2375
+    - name: Run Integration tests
       run: mvn -B verify --file pom.xml
