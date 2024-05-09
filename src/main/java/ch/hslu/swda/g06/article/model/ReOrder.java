@@ -22,6 +22,9 @@ public class ReOrder extends BaseDBObject implements Serializable {
         this.setCurrentEtag();
     }
 
+    public ReOrder() {
+    }
+
     public String getReOrderId() {
         return reOrderId;
     }

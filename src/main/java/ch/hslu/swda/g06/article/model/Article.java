@@ -1,14 +1,13 @@
 package ch.hslu.swda.g06.article.model;
 
 import java.io.Serializable;
-import java.util.Objects;
 import java.util.UUID;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "articles")
-public class Article extends BaseDBObject implements Serializable, Comparable<Article> {
+public class Article extends BaseDBObject implements Serializable {
     @Id
     private String articleId;
     private String name;
@@ -28,6 +27,9 @@ public class Article extends BaseDBObject implements Serializable, Comparable<Ar
         this.mainWarehouseArticleId = mainWarehouseArticleId;
         this.storeId = storeId;
         this.setCurrentEtag();
+    }
+
+    public Article() {
     }
 
     public String getArticleId() {
@@ -97,45 +99,5 @@ public class Article extends BaseDBObject implements Serializable, Comparable<Ar
                 ", mainWarehouseId=" + mainWarehouseArticleId +
                 ", storeId='" + storeId + '\'' +
                 '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-
-        Article article = (Article) o;
-
-        return Objects.equals(articleId, article.articleId) &&
-                Objects.equals(name, article.name) &&
-                Objects.equals(amount, article.amount) &&
-                Objects.equals(price, article.price) &&
-                Objects.equals(minimalQuantity, article.minimalQuantity) &&
-                Objects.equals(mainWarehouseArticleId, article.mainWarehouseArticleId);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(articleId, name, amount, price, minimalQuantity, mainWarehouseArticleId);
-    }
-
-    @Override
-    public int compareTo(Article otherArticle) {
-        int result = this.name.compareTo(otherArticle.name);
-        if (result == 0) {
-            result = this.amount.compareTo(otherArticle.amount);
-        }
-        if (result == 0) {
-            result = this.price.compareTo(otherArticle.price);
-        }
-        if (result == 0) {
-            result = this.minimalQuantity.compareTo(otherArticle.minimalQuantity);
-        }
-        if (result == 0) {
-            result = this.mainWarehouseArticleId.compareTo(otherArticle.mainWarehouseArticleId);
-        }
-        return result;
     }
 }

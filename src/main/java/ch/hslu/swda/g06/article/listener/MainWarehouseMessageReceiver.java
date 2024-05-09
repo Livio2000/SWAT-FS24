@@ -6,7 +6,6 @@ import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -14,16 +13,21 @@ import java.util.Map;
 @Component
 public class MainWarehouseMessageReceiver {
     private static final Gson GSON = new Gson();
-    @Autowired
-    private MainWarehouseFactory MAINWAREHOUSE;
-    @Autowired
-    private AmqpTemplate amqpTemplate;
+
+    private final MainWarehouseFactory mainWarehouseFactory;
+
+    private final AmqpTemplate amqpTemplate;
+
+    public MainWarehouseMessageReceiver(MainWarehouseFactory mainWarehouseFactory, AmqpTemplate amqpTemplate) {
+        this.mainWarehouseFactory = mainWarehouseFactory;
+        this.amqpTemplate = amqpTemplate;
+    }
 
     @RabbitListener(queues ="mainWarehouse.getAll")
     public void getAllMainWarehouseArticles(Message message) {
         MessageProperties properties = message.getMessageProperties();
 
-        Map<Integer, Integer> articles = MAINWAREHOUSE.getStockMap();
+        Map<Integer, Integer> articles = mainWarehouseFactory.getStockMap();
 
         sendArticlesResponse(articles, properties);
     }

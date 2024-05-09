@@ -21,6 +21,9 @@ public class Store extends BaseDBObject implements Serializable {
         setCurrentEtag();
     }
 
+    public Store() {
+    }
+
     public String getStoreId() {
         return storeId;
     }

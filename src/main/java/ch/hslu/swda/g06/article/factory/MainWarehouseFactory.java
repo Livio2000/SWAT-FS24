@@ -14,17 +14,12 @@ public class MainWarehouseFactory {
     private final Stock mainStock = StockFactory.getStock();
 
     /*
-    * Creates 100 random products and adds them to the stockMap.
+    * Creates 100 products with the id 100000-100100 and adds them to the stockMap.
     * This simulates a main warehouse where the stores can get their products.
     */
     public MainWarehouseFactory() {
-        Set<Integer> articleIds = new HashSet<>();
-        for (int i = 0; i < 100; i++){
-            articleIds.add(generateRandomNumber());
-        }
-
-        for(Integer randomArticleId : articleIds) {
-            createArticle(randomArticleId);
+        for (int i = 100000; i < 100100; i++) {
+            createArticle(i);
         }
     }
 
