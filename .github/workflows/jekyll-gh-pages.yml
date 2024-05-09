@@ -26,7 +26,7 @@ jobs:
       - name: Convert AsciiDoc to HTML
         run: |
           sudo gem install asciidoctor asciidoctor-diagram
-          asciidoctor -b html5 -r asciidoctor-diagram -D src/docs/_site src/docs/asciidoc/*.adoc
+          asciidoctor -b html5 -r asciidoctor-diagram -D src/docs/_site src/docs/asciidoc/*
       - name: Build with Jekyll
         uses: actions/jekyll-build-pages@v1
         with:

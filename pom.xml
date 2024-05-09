@@ -733,7 +733,6 @@
                     <attributes>
                         <sourcedir>${project.build.sourceDirectory}</sourcedir>
                     </attributes>
-                    <outputDirectory>src/docs</outputDirectory>
                 </configuration>
                 <executions>
                     <execution>
