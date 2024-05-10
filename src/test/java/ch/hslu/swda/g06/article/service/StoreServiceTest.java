@@ -1,4 +1,4 @@
-package ch.hslu.swda.g06.article.factory;
+package ch.hslu.swda.g06.article.service;
 
 import ch.hslu.swda.g06.article.model.Store;
 import ch.hslu.swda.g06.article.repository.IStoreRepository;
@@ -13,24 +13,24 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class StoreFactoryTest {
-    private StoreFactory storeFactory;
+class StoreServiceTest {
+    private StoreService storeService;
     private IStoreRepository storeRepository;
 
     @BeforeEach
     public void setUp() {
         storeRepository = mock(IStoreRepository.class);
-        storeFactory = new StoreFactory(storeRepository);
+        storeService = new StoreService(storeRepository);
     }
 
     @Test
     void storeExistsById_NullStoreId() {
-        assertFalse(storeFactory.storeExistsById(null));
+        assertFalse(storeService.storeExistsById(null));
     }
 
     @Test
     void storeExistsById_FalseStoreId() {
-        assertFalse(storeFactory.storeExistsById("store123"));
+        assertFalse(storeService.storeExistsById("store123"));
     }
 
     @Test
@@ -39,7 +39,7 @@ class StoreFactoryTest {
         Store store = new Store(storeId, new ArrayList<>());
         when(storeRepository.findById(storeId)).thenReturn(Optional.of(store));
 
-        boolean exists = storeFactory.storeExistsById(storeId);
+        boolean exists = storeService.storeExistsById(storeId);
 
         assertTrue(exists);
     }

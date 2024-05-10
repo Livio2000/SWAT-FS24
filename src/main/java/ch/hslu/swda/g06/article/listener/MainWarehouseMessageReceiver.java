@@ -1,6 +1,6 @@
 package ch.hslu.swda.g06.article.listener;
 
-import ch.hslu.swda.g06.article.factory.MainWarehouseFactory;
+import ch.hslu.swda.g06.article.service.MainWarehouseService;
 import com.google.gson.Gson;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.Message;
@@ -14,12 +14,12 @@ import java.util.Map;
 public class MainWarehouseMessageReceiver {
     private static final Gson GSON = new Gson();
 
-    private final MainWarehouseFactory mainWarehouseFactory;
+    private final MainWarehouseService mainWarehouseService;
 
     private final AmqpTemplate amqpTemplate;
 
-    public MainWarehouseMessageReceiver(MainWarehouseFactory mainWarehouseFactory, AmqpTemplate amqpTemplate) {
-        this.mainWarehouseFactory = mainWarehouseFactory;
+    public MainWarehouseMessageReceiver(MainWarehouseService mainWarehouseService, AmqpTemplate amqpTemplate) {
+        this.mainWarehouseService = mainWarehouseService;
         this.amqpTemplate = amqpTemplate;
     }
 
@@ -27,7 +27,7 @@ public class MainWarehouseMessageReceiver {
     public void getAllMainWarehouseArticles(Message message) {
         MessageProperties properties = message.getMessageProperties();
 
-        Map<Integer, Integer> articles = mainWarehouseFactory.getStockMap();
+        Map<Integer, Integer> articles = mainWarehouseService.getStockMap();
 
         sendArticlesResponse(articles, properties);
     }

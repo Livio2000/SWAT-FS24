@@ -1,4 +1,4 @@
-package ch.hslu.swda.g06.article.factory;
+package ch.hslu.swda.g06.article.service;
 
 import ch.hslu.swda.g06.article.model.ReOrder;
 import ch.hslu.swda.g06.article.model.ReOrderArticle;
@@ -13,17 +13,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class MainWarehouseFactoryTest {
-    private MainWarehouseFactory mainWarehouseFactory;
+class MainWarehouseServiceTest {
+    private MainWarehouseService mainWarehouseService;
 
     @BeforeEach
     public void setUp() {
-        mainWarehouseFactory = new MainWarehouseFactory();
+        mainWarehouseService = new MainWarehouseService();
     }
 
     @Test
     void mainWarehouseFactoryConstructor(){
-        assertEquals(100, mainWarehouseFactory.getStockMap().size());
+        assertEquals(100, mainWarehouseService.getStockMap().size());
     }
 
     @Test
@@ -31,13 +31,13 @@ class MainWarehouseFactoryTest {
         ReOrder reOrder = mock(ReOrder.class);
         List<ReOrderArticle> reOrderItems = new ArrayList<>();
         ReOrderArticle reOrderArticle = mock(ReOrderArticle.class);
-        var someArticle = mainWarehouseFactory.getStockMap().keySet().iterator().next();
+        var someArticle = mainWarehouseService.getStockMap().keySet().iterator().next();
         when(reOrderArticle.getMainWarehouseArticleId()).thenReturn(someArticle);
         when(reOrderArticle.getAmount()).thenReturn(50);
         reOrderItems.add(reOrderArticle);
         when(reOrder.getReOrderItems()).thenReturn(reOrderItems);
 
-        assertTrue(mainWarehouseFactory.createOrder(reOrder));
+        assertTrue(mainWarehouseService.createOrder(reOrder));
     }
 
     @Test
@@ -45,13 +45,13 @@ class MainWarehouseFactoryTest {
         ReOrder reOrder = mock(ReOrder.class);
         List<ReOrderArticle> reOrderItems = new ArrayList<>();
         ReOrderArticle reOrderArticle = mock(ReOrderArticle.class);
-        var someArticle = mainWarehouseFactory.getStockMap().keySet().iterator().next();
+        var someArticle = mainWarehouseService.getStockMap().keySet().iterator().next();
         when(reOrderArticle.getMainWarehouseArticleId()).thenReturn(someArticle);
         when(reOrderArticle.getAmount()).thenReturn(5000); // This amount is too large
         reOrderItems.add(reOrderArticle);
         when(reOrder.getReOrderItems()).thenReturn(reOrderItems);
 
-        assertFalse(mainWarehouseFactory.createOrder(reOrder));
+        assertFalse(mainWarehouseService.createOrder(reOrder));
     }
 
     @Test
@@ -59,13 +59,13 @@ class MainWarehouseFactoryTest {
         ReOrder reOrder = mock(ReOrder.class);
         List<ReOrderArticle> reOrderItems = new ArrayList<>();
         ReOrderArticle reOrderArticle = mock(ReOrderArticle.class);
-        var someArticle = mainWarehouseFactory.getStockMap().keySet().iterator().next();
+        var someArticle = mainWarehouseService.getStockMap().keySet().iterator().next();
         when(reOrderArticle.getMainWarehouseArticleId()).thenReturn(someArticle);
         when(reOrderArticle.getAmount()).thenReturn(50);
         reOrderItems.add(reOrderArticle);
         when(reOrder.getReOrderItems()).thenReturn(reOrderItems);
 
-        assertTrue(mainWarehouseFactory.checkOrder(reOrder).isEmpty());
+        assertTrue(mainWarehouseService.checkOrder(reOrder).isEmpty());
     }
 
     @Test
@@ -73,15 +73,15 @@ class MainWarehouseFactoryTest {
         ReOrder reOrder = mock(ReOrder.class);
         List<ReOrderArticle> reOrderItems = new ArrayList<>();
         ReOrderArticle reOrderArticle = mock(ReOrderArticle.class);
-        var someArticle = mainWarehouseFactory.getStockMap().keySet().iterator().next();
+        var someArticle = mainWarehouseService.getStockMap().keySet().iterator().next();
         when(reOrderArticle.getMainWarehouseArticleId()).thenReturn(someArticle);
         when(reOrderArticle.getAmount()).thenReturn(5000); // This amount is too large
         reOrderItems.add(reOrderArticle);
         when(reOrder.getReOrderItems()).thenReturn(reOrderItems);
 
-        assertFalse(mainWarehouseFactory.checkOrder(reOrder).isEmpty());
-        assertEquals(mainWarehouseFactory.checkOrder(reOrder).getFirst(),
+        assertFalse(mainWarehouseService.checkOrder(reOrder).isEmpty());
+        assertEquals(mainWarehouseService.checkOrder(reOrder).getFirst(),
               "Artikel " + someArticle + " kann nicht nachbestellt werden da im Zentrallager nurnoch "
-                    + mainWarehouseFactory.getStockMap().get(someArticle) + " Stück verfügbar sind");
+                    + mainWarehouseService.getStockMap().get(someArticle) + " Stück verfügbar sind");
     }
 }

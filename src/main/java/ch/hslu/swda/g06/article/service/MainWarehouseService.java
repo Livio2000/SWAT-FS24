@@ -1,4 +1,4 @@
-package ch.hslu.swda.g06.article.factory;
+package ch.hslu.swda.g06.article.service;
 
 import ch.hslu.swda.g06.article.model.ReOrder;
 import ch.hslu.swda.g06.article.model.ReOrderArticle;
@@ -9,7 +9,7 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Component
-public class MainWarehouseFactory {
+public class MainWarehouseService {
     private final Map<Integer, Integer> stockMap = new HashMap<>();
     private final Stock mainStock = StockFactory.getStock();
 
@@ -17,7 +17,7 @@ public class MainWarehouseFactory {
     * Creates 100 products with the id 100000-100100 and adds them to the stockMap.
     * This simulates a main warehouse where the stores can get their products.
     */
-    public MainWarehouseFactory() {
+    public MainWarehouseService() {
         for (int i = 100000; i < 100100; i++) {
             createArticle(i);
         }

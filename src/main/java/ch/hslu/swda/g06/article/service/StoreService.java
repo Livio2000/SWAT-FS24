@@ -1,14 +1,14 @@
-package ch.hslu.swda.g06.article.factory;
+package ch.hslu.swda.g06.article.service;
 
 import ch.hslu.swda.g06.article.model.Store;
 import ch.hslu.swda.g06.article.repository.IStoreRepository;
 import org.springframework.stereotype.Component;
 
 @Component
-public class StoreFactory {
+public class StoreService {
     private final IStoreRepository storeRepository;
 
-    public StoreFactory(IStoreRepository storeRepository){
+    public StoreService(IStoreRepository storeRepository){
         this.storeRepository = storeRepository;
     }
 

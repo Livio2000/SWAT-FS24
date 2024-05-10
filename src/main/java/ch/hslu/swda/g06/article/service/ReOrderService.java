@@ -1,4 +1,4 @@
-package ch.hslu.swda.g06.article.factory;
+package ch.hslu.swda.g06.article.service;
 
 import java.util.List;
 import java.util.Map;
@@ -16,22 +16,22 @@ import ch.hslu.swda.g06.article.repository.IArticleRepository;
 import ch.hslu.swda.g06.article.repository.IReOrderRepository;
 
 @Component
-public class ReOrderFactory {
+public class ReOrderService {
     private final IReOrderRepository reOrderRepository;
 
     private final IArticleRepository articleRepository;
 
-    private final MainWarehouseFactory mainWarehouseFactory;
+    private final MainWarehouseService mainWarehouseService;
 
     private final SendLog logger;
 
-    public ReOrderFactory(IReOrderRepository reOrderRepository,
+    public ReOrderService(IReOrderRepository reOrderRepository,
                           IArticleRepository articleRepository,
-                          MainWarehouseFactory mainWarehouseFactory,
+                          MainWarehouseService mainWarehouseService,
                           SendLog sendLog) {
         this.reOrderRepository = reOrderRepository;
         this.articleRepository = articleRepository;
-        this.mainWarehouseFactory = mainWarehouseFactory;
+        this.mainWarehouseService = mainWarehouseService;
         this.logger = sendLog;
     }
 
@@ -44,7 +44,7 @@ public class ReOrderFactory {
                         .map(entry -> new ReOrderArticle(entry.getKey(), entry.getValue()))
                         .toList());
 
-        List<String> warnings = mainWarehouseFactory.checkOrder(reOrderToOrder);
+        List<String> warnings = mainWarehouseService.checkOrder(reOrderToOrder);
         if (!warnings.isEmpty()) {
             logger.sendReOrderErrorLog(
                     reOrderToOrder,
@@ -53,7 +53,7 @@ public class ReOrderFactory {
             return;
         }
 
-        boolean result = mainWarehouseFactory.createOrder(reOrderToOrder);
+        boolean result = mainWarehouseService.createOrder(reOrderToOrder);
         if (!result) {
             logger.sendReOrderErrorLog(
                     reOrderToOrder,

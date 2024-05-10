@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
 
-import ch.hslu.swda.g06.article.factory.ReOrderFactory;
+import ch.hslu.swda.g06.article.service.ReOrderService;
 import ch.hslu.swda.g06.article.model.ReOrder;
 import ch.hslu.swda.g06.article.repository.IReOrderRepository;
 
@@ -28,7 +28,7 @@ public class ReOrderMessageReceiver {
     private IReOrderRepository reOrderRepository;
 
     @Autowired
-    private ReOrderFactory reOrderFactory;
+    private ReOrderService reOrderService;
 
     @RabbitListener(queues = "reorder.get")
     public void getReOrder(Message message) {
@@ -78,7 +78,7 @@ public class ReOrderMessageReceiver {
             return;
         }
         if (dbReOrder != null) {
-            reOrderFactory.processCompletedReOrder(dbReOrder);
+            reOrderService.processCompletedReOrder(dbReOrder);
             sendReOrderResponse(dbReOrder, properties);
         }
     }

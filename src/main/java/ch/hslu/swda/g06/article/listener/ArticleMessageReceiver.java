@@ -7,6 +7,9 @@ import java.util.Map;
 import java.util.UUID;
 
 import ch.hslu.swda.g06.article.logging.SendLog;
+import ch.hslu.swda.g06.article.service.MainWarehouseService;
+import ch.hslu.swda.g06.article.service.ReOrderService;
+import ch.hslu.swda.g06.article.service.StoreService;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
@@ -16,10 +19,7 @@ import org.springframework.stereotype.Component;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import ch.hslu.swda.g06.article.factory.ArticleFactory;
-import ch.hslu.swda.g06.article.factory.MainWarehouseFactory;
-import ch.hslu.swda.g06.article.factory.ReOrderFactory;
-import ch.hslu.swda.g06.article.factory.StoreFactory;
+import ch.hslu.swda.g06.article.service.ArticleService;
 import ch.hslu.swda.g06.article.model.Article;
 import ch.hslu.swda.g06.article.model.DeleteArticleDto;
 import ch.hslu.swda.g06.article.model.OrderArticleDto;
@@ -36,29 +36,29 @@ public class ArticleMessageReceiver {
 
     private final AmqpTemplate amqpTemplate;
 
-    private final StoreFactory storeFactory;
+    private final StoreService storeService;
 
-    private final ArticleFactory articleFactory;
+    private final ArticleService articleService;
 
-    private final MainWarehouseFactory mainWarehouseFactory;
+    private final MainWarehouseService mainWarehouseService;
 
-    private final ReOrderFactory reOrderFactory;
+    private final ReOrderService reOrderService;
 
     private final SendLog logger;
 
     public ArticleMessageReceiver(IArticleRepository articleRepository,
                                   AmqpTemplate amqpTemplate,
-                                  StoreFactory storeFactory,
-                                  ArticleFactory articleFactory,
-                                  MainWarehouseFactory mainWarehouseFactory,
-                                  ReOrderFactory reOrderFactory,
+                                  StoreService storeService,
+                                  ArticleService articleService,
+                                  MainWarehouseService mainWarehouseService,
+                                  ReOrderService reOrderService,
                                   SendLog sendLog) {
         this.articleRepository = articleRepository;
         this.amqpTemplate = amqpTemplate;
-        this.storeFactory = storeFactory;
-        this.articleFactory = articleFactory;
-        this.mainWarehouseFactory = mainWarehouseFactory;
-        this.reOrderFactory = reOrderFactory;
+        this.storeService = storeService;
+        this.articleService = articleService;
+        this.mainWarehouseService = mainWarehouseService;
+        this.reOrderService = reOrderService;
         this.logger = sendLog;
     }
 
@@ -71,17 +71,17 @@ public class ArticleMessageReceiver {
         newArticle.setArticleId(UUID.randomUUID().toString());
         newArticle.setCurrentEtag();
 
-        if (!mainWarehouseFactory.getStockMap().containsKey(newArticle.getMainWarehouseArticleId())) {
+        if (!mainWarehouseService.getStockMap().containsKey(newArticle.getMainWarehouseArticleId())) {
             sendBadRequestResponse(properties);
             return;
         }
 
-        if (!storeFactory.storeExistsById(newArticle.getStoreId())) {
+        if (!storeService.storeExistsById(newArticle.getStoreId())) {
             sendBadRequestResponse(properties);
             return;
         }
 
-        if (articleFactory.articleExistsInStoreById(newArticle.getMainWarehouseArticleId(), newArticle.getStoreId())) {
+        if (articleService.articleExistsInStoreById(newArticle.getMainWarehouseArticleId(), newArticle.getStoreId())) {
             sendBadRequestResponse(properties);
             return;
         }
@@ -119,12 +119,12 @@ public class ArticleMessageReceiver {
         String articleJson = new String(messageBody, StandardCharsets.UTF_8);
         Article articleToUpdate = GSON.fromJson(articleJson, Article.class);
 
-        if (!storeFactory.storeExistsById(articleToUpdate.getStoreId())) {
+        if (!storeService.storeExistsById(articleToUpdate.getStoreId())) {
             sendBadRequestResponse(properties);
             return;
         }
 
-        if (!articleFactory.articleExistsInStoreById(articleToUpdate.getMainWarehouseArticleId(),
+        if (!articleService.articleExistsInStoreById(articleToUpdate.getMainWarehouseArticleId(),
                 articleToUpdate.getStoreId())) {
             sendBadRequestResponse(properties);
             return;
@@ -142,7 +142,7 @@ public class ArticleMessageReceiver {
         }
 
         if (articleToUpdate.getAmount() < articleToUpdate.getMinimalQuantity()) {
-            reOrderFactory.reOrder(Map.of(articleToUpdate.getMainWarehouseArticleId(), AMOUNTTOREORDER),
+            reOrderService.reOrder(Map.of(articleToUpdate.getMainWarehouseArticleId(), AMOUNTTOREORDER),
                     articleToUpdate.getStoreId(), properties);
         }
 
@@ -196,7 +196,7 @@ public class ArticleMessageReceiver {
 
             articleToVerify.setAmount(articleToVerify.getAmount() - dto.getAmount());
             if (articleToVerify.getMinimalQuantity() > articleToVerify.getAmount()) {
-                reOrderFactory.reOrder(Map.of(articleToVerify.getMainWarehouseArticleId(), AMOUNTTOREORDER),
+                reOrderService.reOrder(Map.of(articleToVerify.getMainWarehouseArticleId(), AMOUNTTOREORDER),
                         articleToVerify.getStoreId(), properties);
             }
             articleToVerify.setCurrentEtag();
