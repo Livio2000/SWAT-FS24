@@ -2,7 +2,6 @@ package ch.hslu.swda.g06.article.integrationTests;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.lang.reflect.Type;
 import java.util.Map;
@@ -81,7 +80,7 @@ class GetMainWarehouseIT {
     }
 
     @AfterEach
-    void resetExchanges() {
+    void resetQueues() {
         amqpAdmin.purgeQueue("mainWarehouse.getAll", false);
         amqpAdmin.purgeQueue("mainWarehouse.response", false);
     }
@@ -95,11 +94,11 @@ class GetMainWarehouseIT {
         Message message = new Message("".getBytes(), messageProperties);
         rabbitTemplate.send("swda", "mainWarehouse.getAll", message);
 
-        Message getAllArticleMessage = rabbitTemplate.receive("mainWarehouse.response", 5000);
+        Message getAllMainWarehouseArticlesMessage = rabbitTemplate.receive("mainWarehouse.response", 5000);
+        assert getAllMainWarehouseArticlesMessage != null;
         Type articleListType = new TypeToken<Map<Integer, Integer>>(){}.getType();
-        Map<Integer, Integer> receivedArticles = GSON.fromJson(new String(getAllArticleMessage.getBody()), articleListType);
+        Map<Integer, Integer> receivedArticles = GSON.fromJson(new String(getAllMainWarehouseArticlesMessage.getBody()), articleListType);
 
-        assertNotNull(getAllArticleMessage);
         assertNotNull(receivedArticles);
         assertEquals(100, receivedArticles.size(), "The number of articles in the main warehouse is not correct.");
     }

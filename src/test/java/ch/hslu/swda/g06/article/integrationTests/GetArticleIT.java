@@ -86,7 +86,7 @@ class GetArticleIT {
     }
 
     @AfterEach
-    void resetExchanges() {
+    void resetQueues() {
         amqpAdmin.purgeQueue("article.getAll", false);
         amqpAdmin.purgeQueue("article.get", false);
         amqpAdmin.purgeQueue("article.response", false);
@@ -103,6 +103,7 @@ class GetArticleIT {
         rabbitTemplate.send("swda", "article.get", message);
 
         Message getArticleMessage = rabbitTemplate.receive("article.response", 5000);
+        assert getArticleMessage != null;
         Article receivedArticle = GSON.fromJson(new String(getArticleMessage.getBody()), Article.class);
 
         assertNotNull(getArticleMessage);
@@ -122,9 +123,9 @@ class GetArticleIT {
         rabbitTemplate.send("swda", "article.get", message);
 
         Message getArticleMessage = rabbitTemplate.receive("article.response", 5000);
+        assert getArticleMessage != null;
         Article receivedArticle = GSON.fromJson(new String(getArticleMessage.getBody()), Article.class);
 
-        assertNotNull(getArticleMessage);
         assertNotNull(receivedArticle);
         assertEquals(article.getArticleId(), receivedArticle.getArticleId(), "Article Id should match");
         assertEquals(article.getName(), receivedArticle.getName(), "Name should match");
@@ -146,10 +147,10 @@ class GetArticleIT {
         rabbitTemplate.send("swda", "article.getAll", message);
 
         Message getAllArticlesMessage = rabbitTemplate.receive("article.response", 5000);
+        assert getAllArticlesMessage != null;
         Type articleListType = new TypeToken<List<Article>>() { }.getType();
         List<Article> receivedArticles = GSON.fromJson(new String(getAllArticlesMessage.getBody()), articleListType);
 
-        assertNotNull(getAllArticlesMessage);
         assertNotNull(receivedArticles);
         assertEquals(0, receivedArticles.size(), "No articles should be returned");
     }
@@ -167,10 +168,10 @@ class GetArticleIT {
         rabbitTemplate.send("swda", "article.getAll", message);
 
         Message getAllArticlesMessage = rabbitTemplate.receive("article.response", 5000);
+        assert getAllArticlesMessage != null;
         Type articleListType = new TypeToken<List<Article>>() { }.getType();
         List<Article> receivedArticles = GSON.fromJson(new String(getAllArticlesMessage.getBody()), articleListType);
 
-        assertNotNull(getAllArticlesMessage);
         assertNotNull(receivedArticles);
         assertEquals(0, receivedArticles.size(), "No articles should be returned");
     }
@@ -192,10 +193,10 @@ class GetArticleIT {
         rabbitTemplate.send("swda", "article.getAll", message);
 
         Message getAllArticlesMessage = rabbitTemplate.receive("article.response", 5000);
+        assert getAllArticlesMessage != null;
         Type articleListType = new TypeToken<List<Article>>() { }.getType();
         List<Article> receivedArticles = GSON.fromJson(new String(getAllArticlesMessage.getBody()), articleListType);
 
-        assertNotNull(getAllArticlesMessage);
         assertNotNull(receivedArticles);
         assertEquals(2, receivedArticles.size(), "2 articles should be returned");
         assertEquals(article1.getArticleId(), receivedArticles.getFirst().getArticleId(), "Article Id should match");

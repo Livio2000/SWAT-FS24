@@ -7,7 +7,6 @@ import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
@@ -18,10 +17,15 @@ import ch.hslu.swda.g06.article.repository.IStoreRepository;
 @Component
 public class StoreMessageReceiver {
     private static final Gson GSON = new Gson();
-    @Autowired
-    private IStoreRepository storeRepository;
-    @Autowired
-    private AmqpTemplate amqpTemplate;
+
+    private final IStoreRepository storeRepository;
+
+    private final AmqpTemplate amqpTemplate;
+
+    public StoreMessageReceiver(IStoreRepository storeRepository, AmqpTemplate amqpTemplate) {
+        this.storeRepository = storeRepository;
+        this.amqpTemplate = amqpTemplate;
+    }
 
     @RabbitListener(queues = "store.post")
     public void createStore(Message message) {

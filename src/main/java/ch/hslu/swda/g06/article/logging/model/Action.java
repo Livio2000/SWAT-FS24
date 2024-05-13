@@ -1,6 +1,6 @@
 package ch.hslu.swda.g06.article.logging.model;
 
-public class Action {
+public final class Action {
     private final String operation;
     private final String entityName;
     private final String entityId;
