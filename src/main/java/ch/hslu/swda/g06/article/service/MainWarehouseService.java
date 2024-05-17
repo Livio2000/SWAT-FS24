@@ -6,7 +6,6 @@ import ch.hslu.swda.stock.api.*;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 
 @Component
 public class MainWarehouseService {
@@ -63,9 +62,5 @@ public class MainWarehouseService {
 
         this.stockMap.put(articleId, stock);
         return stock > 0;
-    }
-
-    private static int generateRandomNumber() {
-        return ThreadLocalRandom.current().nextInt(100000, 1000000);
     }
 }

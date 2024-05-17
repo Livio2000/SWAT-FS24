@@ -38,7 +38,7 @@ public class ReOrderService {
     public void reOrder(Map<Integer, Integer> articlesToOrder, String forStoreId, MessageProperties properties) {
         ReOrder reOrderToOrder = new ReOrder(
                 UUID.randomUUID().toString(),
-                ReOrderState.Ordered,
+                ReOrderState.ORDERED,
                 forStoreId,
                 articlesToOrder.entrySet().stream()
                         .map(entry -> new ReOrderArticle(entry.getKey(), entry.getValue()))
@@ -67,12 +67,12 @@ public class ReOrderService {
     }
 
     public void processCompletedReOrder(ReOrder reOrder) {
-        if (reOrder.getReOrderState() == ReOrderState.Complete) {
+        if (reOrder.getReOrderState() == ReOrderState.COMPLETE) {
             return;
         }
 
         if (updateAmountOfReOrderArticles(reOrder)) {
-            reOrder.setReOrderState(ReOrderState.Complete);
+            reOrder.setReOrderState(ReOrderState.COMPLETE);
             reOrder.setCurrentEtag();
             reOrderRepository.save(reOrder);
         }

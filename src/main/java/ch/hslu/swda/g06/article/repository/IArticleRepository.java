@@ -7,12 +7,9 @@ import org.springframework.data.mongodb.repository.Query;
 import java.util.List;
 
 public interface IArticleRepository extends MongoRepository<Article, String> {
-    @Query("{_id: '?0'}")
-    public Article getArticleByArticleID(String id);
-
     @Query("{'mainWarehouseArticleId': ?0, 'storeId': ?1}")
-    public Article getArticleByMainWarehouseArticleIdAndStoreId(Integer mainWarehouseArticleId, String storeId);
+    Article getArticleByMainWarehouseArticleIdAndStoreId(Integer mainWarehouseArticleId, String storeId);
 
     @Query("{storeId: '?0'}")
-    public List<Article> getArticlesBystoreID(String storeId);
+    List<Article> getArticlesBystoreID(String storeId);
 }
